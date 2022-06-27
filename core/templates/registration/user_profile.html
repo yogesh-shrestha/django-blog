@@ -1,0 +1,45 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% block title %}
+    Profile
+{% endblock %}
+
+
+{% block content %}
+
+<h3>User Profile</h3>  <hr>
+
+<h4>{{user.first_name}} {{user.last_name}}</h4>
+<div class = "row">
+    {% if profile.profile_image %} 
+    <div class="col-3"><img src="{{profile.profile_image.url}} " alt="" class="profile-image"> </div>
+    {% else %}
+    <img src="{% static 'blog/images/default-pic.png' %}" class="img-thumbnail rounded-circle" style="width:100px; height:100px; margin-left: 1em;"/>
+    {% endif %}
+    <div class="col-9">{{profile.bio}}</div>
+</div>
+<br>
+<div class="row">
+    <div class="col-2">
+        <strong>Facebook:</strong> <br> 
+        <strong>Twitter:</strong> <br>  
+        <strong>Instagram:</strong> <br>
+        <strong>LinkedIn:</strong> <br>
+        <strong>Pinterest:</strong> <br>
+    </div>
+    <div class="col-10">
+        <a href="">{{profile.facebook_url}}</a> <br>
+        <a href="">{{profile.twiiter_url}}</a> <br>
+        <a href="">{{profile.instagram_url}}</a> <br>
+        <a href="">{{profile.linkedin_url}}</a> <br>
+        <a href="">{{profile.pinterest_url}}</a> <br>
+    </div>
+
+</div>
+<br>  
+
+{% if user == profile.user %}
+    <a href=" {% url 'core:edit-profile' user.profile.id %} ">Edit Profile</a>
+{% endif %}
+
+{% endblock%}

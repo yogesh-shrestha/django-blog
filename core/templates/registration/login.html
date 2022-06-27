@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+    {% if not user.is_authenticated %}
+        <h4>Login</h4> 
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-secondary">Login</button>
+            </form>
+        </div>
+
+        You aren't registered? <a href=" {% url 'core:register' %} "class="text-decoration-none">register</a>
+    {% else %}
+        <h3>You are already logged in !</h3>
+    {% endif %}
+{% endblock %}

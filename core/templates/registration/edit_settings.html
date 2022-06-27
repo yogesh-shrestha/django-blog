@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    Edit Profile
+{% endblock %}
+
+{% block content %}
+
+    {% if user.is_authenticated %}
+        <h4>Edit Profile</h4> 
+        <hr><br>    
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-secondary">Change Profile</button>
+            </form>
+        </div>
+    {% else %}
+        You are not logged in !
+    {% endif %}
+
+{% endblock %}

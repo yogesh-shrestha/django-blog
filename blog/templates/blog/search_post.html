@@ -1,0 +1,27 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    Search Results
+{% endblock %}
+
+{% block content %}
+    {% if posts %}
+        <h5>Search Results..</h5>
+        <hr>
+        {% for post in posts %}
+        <div class="card">
+        <div class="card-header">
+            <h4><a href=" {% url 'blog:post' post.slug %} " class="inline link-dark text-decoration-none">{{ post.title }}</a></h4>
+            <small class="inline text-muted"> {{ post.post_date.date }} </small>
+        </div>
+        <div class="card-body">
+        <p class="card-text">{{ post.body | safe | slice:":290" }} ... <a href=" {% url 'blog:post' post.id %} " class="text-decoration-none">Read More</a></p>
+        </div>
+        </div>
+        <br>
+        {% endfor %}
+    {% else %}
+        <h5>No Search Results..</h5>
+    {% endif %}
+
+{% endblock%}

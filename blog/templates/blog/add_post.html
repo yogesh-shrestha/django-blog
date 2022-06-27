@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    add post
+{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <h4>Add Post</h4> 
+        <div class="form-group">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.media }}
+                {{ form.as_p }}
+                <button class="btn btn-secondary">Post</button>
+            </form>
+        </div>
+    {% else %}
+        <h5>You are not allowed to post !</h5>
+        <a href=" {% url 'login' %} " class="text-decoration-none">login</a>
+    {% endif %}
+
+{% endblock %}

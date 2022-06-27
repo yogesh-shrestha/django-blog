@@ -1,0 +1,116 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}
+    Post Detail
+{% endblock %}
+
+{% block content %}
+
+    <h4>{{ post_detail.title }}</h4> 
+    <small class="text-muted"> {{ post_detail.author.first_name }} {{ post_detail.author.last_name }} | 
+        <i class="fa fa-calendar" aria-hidden="true" style="font-size:16px;"></i> {{ post_detail.post_date.date }} | 
+        <a href=" {% url 'blog:cat-posts' post_detail.category.id %} " class="text-decoration-none">{{ post_detail.category.name }}</a></small> |
+        <form action="{% url 'blog:like-post' post_detail.pk %}" method="POST" class="d-inline"> {%csrf_token%}
+        {% if user.is_authenticated %}
+            {% if liked %}
+            <button type="submit", name="post_id", value="{{ post_detail.id }}" class ="btn btn-outline-danger btn-sm"><i class="fa fa-thumbs-down" aria-hidden="true"></i></button> 
+            {% else %}
+            <button type="submit", name="post_id", value="{{ post_detail.id }}" class ="btn btn-outline-info btn-sm"><i class="fa fa-thumbs-up" aria-hidden="true"></i></button> 
+            {% endif %}
+        {% else %}
+            <p class="d-inline"><small><a href="{% url 'login' %}" class="text-decoration-none">login to like</a></small></p>
+        {% endif %}
+        <p class="d-inline text-muted">{{post_detail.total_likes}} likes</p>
+        </form>
+    <hr>
+    {% if post_detail.header_image_url %}
+                <img src=" {{post_detail.header_image_url}} " alt="" class="header-image">
+            {% endif %}
+    <p> {{ post_detail.body | safe }} </p>
+
+
+    <p  class="d-inline"><b>Tags:</b></p>
+    {% for tagged_item in post_detail.tags.all %}
+        <a href="{% url 'blog:tag-posts' tagged_item.tag_id %}" class="text-decoration-none">{{ tagged_item.tag.label }}</a>
+        {% if not loop.last %}
+        ,
+        {% endif %}
+    {% endfor %}
+    <br>
+
+
+    <br>
+    {% if user == post_detail.author or perms.authentication.change_post %}
+        <a href=" {% url 'blog:update-post' post_detail.pk %} ">Edit Post</a>
+    {% endif %}
+    {% if user.is_superuser %}
+        <a href=" {% url 'blog:delete-post' post_detail.pk %} ">Delete Post</a>
+    {% endif %}
+       
+    <hr>
+    <div class="row">
+        <div class="col-2">
+        {% if post_detail.author.profile.profile_image %} 
+            <img src="{{post_detail.author.profile.profile_image.url}}"  class="profile-image-post img-thumbnail rounded-circle"/>    
+        {% else %}
+            <img src="{% static 'blog/images/default-pic.png' %}" class="profile-image-post img-thumbnail rounded-circle"/>
+        {% endif %}
+    </div>
+
+        <div class="col-10">
+            <div class="row">
+                <div class="col-12">
+                    <p style="font-weight: bold;" class="d-inline-flex">{{post_detail.author.first_name}} {{post_detail.author.last_name}}</p>                              
+                        {% if post_detail.author.profile.facebook_url%}
+                        <a href=""><i class="fa fa-facebook-square" style="font-size:22px; color:#4267B2;"></i></a>
+                        {% endif %}
+                        {% if post_detail.author.profile.twiiter_url%}
+                        <a href=""><i class="fa fa-twitter-square" style="font-size:22px; color:#4267B2;"></i></a>
+                        {% endif %}
+                        {% if post_detail.author.profile.instagram_url%}
+                        <a href=""><i class="fa fa-instagram" style="font-size:22px; color:	#C13584;"></i></a>
+                        {% endif %}
+                        {% if post_detail.author.profile.linkedin_url%}
+                        <a href=""><i class="fa fa-linkedin" style="font-size:22px; color:	#0072b1;"></i> </a>
+                        {% endif %}
+                        {% if post_detail.author.profile.pinterest_url%}
+                        <a href=""><i class="fa fa-pinterest" style="font-size:22px; color:	#E60023;"></i></a> 
+                        {% endif %}                                  
+               </div>
+            </div>     
+            {{ post_detail.author.profile.bio }}
+        </div>
+    </div>
+   <hr>
+
+   
+
+    <div class="row">
+    <h6>Add Comment</h6> 
+    <div class="col-8 form-group bg-light" style="padding: 1em;">
+        <form method="POST" action="{% url 'blog:submit-commit' post_detail.slug %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-secondary">Add Comment</button>
+        </form>
+    </div>
+    <div class="col-3"></div>
+    </div>
+    <br>
+
+    
+
+    <h5>Comments:</h5>
+    <hr>
+    {% if not post_detail.comments.all %}
+        No comments yet ..
+    {% else %}
+        {% for comment in post_detail.comments.all %}
+            <b>{{ comment.name }}</b>, {{ comment.date_added }} <br>
+            <p style="margin-left: 2em;"> {{ comment.content }} </p>
+            <hr>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
